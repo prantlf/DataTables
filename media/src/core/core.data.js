@@ -11,11 +11,20 @@ function _fnAddData ( oSettings, aDataSupplied )
 {
 	var oCol;
 	
-	/* Take an independent copy of the data source so we can bash it about as we wish */
-	var aDataIn = ($.isArray(aDataSupplied)) ?
-		aDataSupplied.slice() :
-		$.extend( true, {}, aDataSupplied );
-	
+	if ( oSettings.oFeatures.bCloneData )
+	{
+		/* Take an independent copy of the data source so we can bash it about as we wish */
+		var aDataIn = ($.isArray(aDataSupplied)) ?
+			aDataSupplied.slice() :
+			$.extend( true, {}, aDataSupplied );
+	}
+	else
+	{
+		/* If the model (data) is never changed directly in DataTables - you use the mData
+		   method exclusively , for example - the cloning can be turned off. */
+		var aDataIn = aDataSupplied;
+	}
+
 	/* Create the object for storing information about this new row */
 	var iRow = oSettings.aoData.length;
 	var oData = $.extend( true, {}, DataTable.models.oRow );

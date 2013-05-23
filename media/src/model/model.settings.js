@@ -48,6 +48,18 @@ DataTable.models.oSettings = {
 		 *  @type boolean
 		 */
 		"bDeferRender": null,
+
+		/**
+		 * If you use complex objects ad the data assigned to DataTables to render,
+		 * you may want to store them directly without having them cloned; gaining
+		 * both performance and the objects will not be destroyd by extracting just
+		 * attributes from them and dropping functions, events or other members.
+		 * See also the explanation at the default parameter value.
+		 * Note that this parameter will be set by the initialisation routine. To
+		 * set a default use {@link DataTable.defaults}.
+		 *  @type boolean
+		 */
+		"bCloneData": null,
 		
 		/**
 		 * Enable filtering on the table or not. Note that if this is disabled

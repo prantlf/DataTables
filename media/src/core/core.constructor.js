@@ -95,6 +95,7 @@ _fnMap( oSettings.oFeatures, oInit, "bAutoWidth" );
 _fnMap( oSettings.oFeatures, oInit, "bSortClasses" );
 _fnMap( oSettings.oFeatures, oInit, "bServerSide" );
 _fnMap( oSettings.oFeatures, oInit, "bDeferRender" );
+_fnMap( oSettings.oFeatures, oInit, "bCloneData" );
 _fnMap( oSettings.oScroll, oInit, "sScrollX", "sX" );
 _fnMap( oSettings.oScroll, oInit, "sScrollXInner", "sXInner" );
 _fnMap( oSettings.oScroll, oInit, "sScrollY", "sY" );

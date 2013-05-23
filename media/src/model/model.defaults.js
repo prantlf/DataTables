@@ -263,6 +263,41 @@ DataTable.defaults = {
 
 
 	/**
+	 * When data are added to DataTables by any means, at the end the fnAddData
+	 * method is called. It makes a clone of the input object to enable its
+	 * modifications during rendering without affecting the original data.
+	 * However, if the data retrieveing and rendering functionality is perforemed
+	 * by mData and mRender methods, the copying is not necessary, and not only
+	 * it can be seen as performance drawback, but it also destroys more complicated
+	 * objects with can be used as a data. (Bockbone collections, for example.)
+	 * With the cloning turned on, you may be forced to maintain a link between your
+	 * actual model and the "lesser" clone stored in DataTables. If the above notes
+	 * describe your scenario, you will benefit from turning this flag off.
+	 * See also http://datatables.net/forums/discussion/8903/datatables-backbone-rowreordering-plugin.
+	 *  @type boolean
+	 *  @default true
+	 *  @dtopt Features
+	 *
+	 *  @example
+	 *    var collection = new Backbone.Collection({ ... });
+	 *    $(document).ready( function() {
+	 *      $('#example').dataTable( {
+	 *        "bProcessing": true,
+	 *        "bServerSide": true,
+	 *        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	 *          return fnCallback( {
+	 *            "iTotalRecords": collection.models.length,
+	 *            "iTotalDisplayRecords": collection.models.length,
+	 *            "aaData": collection.models
+	 *          } );
+	 *        }
+	 *      } );
+	 *    } );
+	 */
+	"bCloneData": true,
+
+
+	/**
 	 * Replace a DataTable which matches the given selector and replace it with 
 	 * one which has the properties of the new initialisation object passed. If no
 	 * table matches the selector, then the new DataTable will be constructed as

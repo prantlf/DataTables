@@ -1,3 +1,6 @@
+define(['module', 'jquery', 'css!jquery.datatables.theme'], function(module, jQuery) {
+  console.log("Loading the module " + module.id + " from " + module.uri + ".");
+
 /**
  * @summary     DataTables
  * @description Paginate, search and sort HTML tables
@@ -462,11 +465,20 @@
 		function _fnAddData ( oSettings, aDataSupplied )
 		{
 			var oCol;
-			
-			/* Take an independent copy of the data source so we can bash it about as we wish */
-			var aDataIn = ($.isArray(aDataSupplied)) ?
-				aDataSupplied.slice() :
-				$.extend( true, {}, aDataSupplied );
+
+			if ( oSettings.oFeatures.bCloneData )
+			{
+				/* Take an independent copy of the data source so we can bash it about as we wish */
+				var aDataIn = ($.isArray(aDataSupplied)) ?
+					aDataSupplied.slice() :
+					$.extend( true, {}, aDataSupplied );
+			}
+			else
+			{
+				/* If the model (data) is never changed directly in DataTables - you use the mData
+				   method exclusively , for example - the cloning can be turned off. */
+				var aDataIn = aDataSupplied;
+			}
 			
 			/* Create the object for storing information about this new row */
 			var iRow = oSettings.aoData.length;
@@ -6461,6 +6473,7 @@
 			_fnMap( oSettings.oFeatures, oInit, "bSortClasses" );
 			_fnMap( oSettings.oFeatures, oInit, "bServerSide" );
 			_fnMap( oSettings.oFeatures, oInit, "bDeferRender" );
+			_fnMap( oSettings.oFeatures, oInit, "bCloneData" );
 			_fnMap( oSettings.oScroll, oInit, "sScrollX", "sX" );
 			_fnMap( oSettings.oScroll, oInit, "sScrollXInner", "sXInner" );
 			_fnMap( oSettings.oScroll, oInit, "sScrollY", "sY" );
@@ -8085,6 +8098,41 @@
 		"bDeferRender": false,
 	
 	
+		/**
+		 * When data are added to DataTables by any means, at the end the fnAddData
+		 * method is called. It makes a clone of the input object to enable its
+		 * modifications during rendering without affecting the original data.
+		 * However, if the data retrieveing and rendering functionality is perforemed
+		 * by mData and mRender methods, the copying is not necessary, and not only
+		 * it can be seen as performance drawback, but it also destroys more complicated
+		 * objects with can be used as a data. (Bockbone collections, for example.)
+		 * With the cloning turned on, you may be forced to maintain a link between your
+		 * actual model and the "lesser" clone stored in DataTables. If the above notes
+		 * describe your scenario, you will benefit from turning this flag off.
+		 * See also http://datatables.net/forums/discussion/8903/datatables-backbone-rowreordering-plugin.
+		 *  @type boolean
+		 *  @default true
+		 *  @dtopt Features
+		 *
+		 *  @example
+		 *    var collection = new Backbone.Collection({ ... });
+		 *    $(document).ready( function() {
+		 *      $('#example').dataTable( {
+		 *        "bProcessing": true,
+		 *        "bServerSide": true,
+		 *        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+		 *          return fnCallback( {
+		 *            "iTotalRecords": collection.models.length,
+		 *            "iTotalDisplayRecords": collection.models.length,
+		 *            "aaData": collection.models
+		 *          } );
+		 *        }
+		 *      } );
+		 *    } );
+		 */
+		"bCloneData": true,
+
+
 		/**
 		 * Replace a DataTable which matches the given selector and replace it with 
 		 * one which has the properties of the new initialisation object passed. If no
@@ -10582,7 +10630,19 @@
 			 *  @type boolean
 			 */
 			"bDeferRender": null,
-			
+
+			/**
+			 * If you use complex objects ad the data assigned to DataTables to render,
+			 * you may want to store them directly without having them cloned; gaining
+			 * both performance and the objects will not be destroyd by extracting just
+			 * attributes from them and dropping functions, events or other members.
+			 * See also the explanation at the default parameter value.
+			 * Note that this parameter will be set by the initialisation routine. To
+			 * set a default use {@link DataTable.defaults}.
+			 *  @type boolean
+			 */
+			"bCloneData": null,
+
 			/**
 			 * Enable filtering on the table or not. Note that if this is disabled
 			 * then there is no filtering at all on the table, including fnFilter.
@@ -12096,4 +12156,3 @@
 }));
 
 }(window, document));
-
